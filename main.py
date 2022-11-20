@@ -57,22 +57,57 @@ def main():
             mycursor.execute("SELECT passWd FROM accounts")
 
             validPass = mycursor.fetchall()
-
-            loggedIn = False
             
-            while loggedIn == False:
+            while True:
 
                 currUser = str(input("\nEnter your username: "))
 
                 for i in validUser:
                     if any(currUser in i for i in validUser):
-                        while loggedIn == False:
+                        while True:
                             currPass = str(input("\n Enter your password: "))
 
                             for i in validPass:
                                 if any(currPass in i for i in validPass):
                                     loggedIn = True
-                                    break
+
+                                    while loggedIn == True:
+                                        print("\n\n0. Exit the program\n")
+                                        print("1. Browse our inventory\n")
+                                        print("2. View your cart\n")
+                                        print("3. Edit your account information\n")
+                                        print("4. Delete your account\n")
+
+                                        menuSel = int(input("\nPlease make a selection: "))
+
+                                        if menuSel == 0:
+                                            raise SystemExit(0)
+
+                                        #elif menuSel == 1:
+
+
+                                        #elif menuSel == 2:
+
+                                        #elif menuSel == 3:
+
+                                        elif menuSel == 4:
+                                            str(input("\nAre you sure you want to delete your account? (y/n) "))
+                                            userConf = str(input("\nARE YOU SURE? (y/n) "))
+
+                                            if (userConf == 'n'):
+                                                continue
+
+                                            elif (userConf == 'y'):
+                                                accDel = "DELETE FROM accounts WHERE userName = '" + currUser +"'"
+
+                                                mycursor.execute(accDel)
+
+                                                mydb.commit()
+
+                                            else:
+                                                print("\nERROR: That is not a valid selection. Exiting to menu.\n")
+                                                break
+                                                
 
                                 else:
                                     print("ERROR: That password is incorrect. Please try again.\n")
@@ -85,20 +120,30 @@ def main():
                         break
 
                          
-            break
+                break
+
+        elif menuSel == 2:
+
+            print("Welcome!")
+            validNew = False
+            while validNew == False:
+                #if any 
+                newUser = str(input("Please enter your username: "))
+                newPass = str(input("Please enter your password: "))
+
+                mycursor.execute("SELECT customerID FROM accounts")
+
+                IDind = mycursor.fetchall()
+
+                newID = "0" + str(len(IDind) + 1)
+
+
 
     
-    while True:
-        print("\n\n0. Exit the program\n")
-        print("1. Browse our inventory\n")
-        print("2. View your cart\n")
-        print("3. Edit your account information\n")
-        print("4. Delete your account\n")
 
-        menuSel = int(input("\nPlease make a selection: "))
+        
 
-        if menuSel == 0:
-            raise SystemExit(0)
+
 
 
                 
