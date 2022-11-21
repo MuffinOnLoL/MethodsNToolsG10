@@ -98,15 +98,24 @@ def main():
                                                 continue
 
                                             elif (userConf == 'y'):
+
                                                 accDel = "DELETE FROM accounts WHERE userName = '" + currUser +"'"
 
                                                 mycursor.execute(accDel)
 
                                                 mydb.commit()
 
+                                                raise SystemExit(0)
+
+                                                
+                                                
+        
+
                                             else:
                                                 print("\nERROR: That is not a valid selection. Exiting to menu.\n")
                                                 break
+                                            
+                                            
                                                 
 
                                 else:
@@ -122,20 +131,45 @@ def main():
                          
                 break
 
-        elif menuSel == 2:
+        elif menuSel == 2: 
+
+            mycursor.execute("SELECT userName FROM accounts")
+
+            validUser = mycursor.fetchall()
+
+            mycursor.execute("SELECT passWd FROM accounts")
+
+            validPass = mycursor.fetchall()
 
             print("Welcome!")
             validNew = False
             while validNew == False:
-                #if any 
-                newUser = str(input("Please enter your username: "))
-                newPass = str(input("Please enter your password: "))
+                newUser = str(input("Please enter a username: "))
 
-                mycursor.execute("SELECT customerID FROM accounts")
+                if any(newUser in i for i in validUser):
+                    print("ERROR: That username already exists. Please enter a different one.")
+                    continue
 
-                IDind = mycursor.fetchall()
+                else:
 
-                newID = "0" + str(len(IDind) + 1)
+                    newPass = str(input("Please enter a password: "))
+
+                    if any(newPass in i for i in validPass):
+                        print("ERROR: That password already exists. Please enter a different one.")
+                        continue
+
+                    else:
+                        mycursor.execute("SELECT customerID FROM accounts")
+                        IDind = mycursor.fetchall()
+                        newID = "980" + str(len(IDind) + 1)
+
+                        sql = "INSERT INTO accounts (customerID, userName, passWd) VALUES ('" + newID + "', '" + newUser + "', '" + newPass + "')"
+
+                        mycursor.execute(sql)
+
+                        mydb.commit()
+
+                        break
 
 
 
