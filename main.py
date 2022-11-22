@@ -1,38 +1,210 @@
 import mysql.connector
 
 
+
+#Connects SQL webserver through XAMPP to access database
 mydb = mysql.connector.connect(
     host = "localhost",
     user = "root",
     database = "ECommerce_Group10"
 )
 
-print(mydb)
 
+#Use cursor to navigate SQL table
 mycursor = mydb.cursor()
 
 
-#class account:
-
-
-#class shoppingCart:
-
-
-##class orderHistory:
-    ##def __init__(self, purchased, shippingInfo, paymentInfo):
-        ##self.purchased = purchased
-        #self.shippingInfo = shippingInfo
-        #self.paymentInfo = paymentInfo
-
-    ##def addToOrderHistory(self):
+#SELECT query to concatenate SQL table into list of tuples to be accessed throughout program (fetchall)
+mycursor.execute("SELECT * FROM accounts")
+userExist = mycursor.fetchall()
 
 
 
+#intialize User class using init method
+class User:
+    def __init__(self, customerID, firstName, lastName, userName, passWd, shippingInfo, paymentInfo):
+        self.customerID = customerID
+        self.firstName = firstName
+        self.lastName = lastName
+        self.userName = userName
+        self.passWd = passWd
+        self.shippingInfo = shippingInfo
+        self.paymentInfo = paymentInfo
 
-#class inventory:
+
+
+    #create logIn function to validate info with SQL table and move on to next menu using SELECT
+    def logIn(self):
+        while True:
+            self.userName = str(input("\nPLease enter your username: "))
+
+            for i in userExist:
+                if (i[3] == userExist):
+                    print("\nERROR: That username does not exist. Please try again.\n")
+                    break
+                
+                else:
+                    self.passWd = str(input("\nPlease enter your password: "))
+
+                    for i in userExist:
+                        if (i[4] == userExist):
+                            print("\nERROR: That password is incorrect. Please try again.\n")
+                            break
+
+                        else:
+                            print("\nSuccessfully logged in!")
+                            return
+        
+
+
+    #create Register function to initialize new row in SQL table using INSERT
+    #A bunch of nested loops to prevent empty input
+    def Register(self):
+        while True:
+            self.userName = str(input("\nPlease enter a username: "))
+
+            for i in userExist:
+                if (i[3] == self.userName):
+                    print("\nERROR: That username already exists. Please enter a different one.")
+                    break
+
+                elif self.userName == "":
+                    print("\nERROR: You must enter a username. Please try again\n")
+                    break
+
+                else:
+
+                    self.passWd = str(input("\nPlease enter a password: "))
+
+                    for i in userExist:
+                        if (i[4] == self.passWd):
+                            print("\nERROR: That password already exists. Please enter a different one.")
+                            break
+
+                        elif self.passWd == "":
+                            print("\nERROR: You must enter a password. Please try again\n")
+                            break
+
+                        else:
+                            while True:
+                                self.firstName = str(input("\nWhat is your first name? "))
+
+                                if self.firstName == "":
+                                    print("\nERROR: You must enter a name. Please try again\n")
+                                
+                                else:
+                                    while True:
+                                        self.lastName = str(input("\nWhat is your last name? "))
+
+                                        if self.lastName == "":
+                                            print("\nERROR: You must enter a name. Please try again\n")
+
+                                        else:
+                                            while True:
+                                                self.shippingInfo = str(input("\nWhat is your shipping address? "))
+
+                                                if self.shippingInfo == "":
+                                                    print("\nERROR: You must enter an address. Please try again\n")
+
+                                                else:
+                                                    while True:
+                                                        self.paymentInfo = str(input("\nWhat is your six-digit payment number? "))
+
+                                                        if self.paymentInfo == "":
+                                                            print("\nERROR: You must enter a payment number. Please try again\n")
+
+                                                        else:
+                                                            
+                                                            #Final instructions, ensures ID number is new and unique
+                                                            ind = len(userExist)
+
+                                                            self.customerID = str(userExist[ind - 1][0] + 1)
+
+                                                            #String concatenated insert query
+                                                            sql = "INSERT INTO accounts (customerID, firstName, lastName, userName, passWd, shippingInfo, paymentInfo) VALUES ('" + self.customerID + "', '" + self.firstName + "', '" + self.lastName + "', '" + self.userName + "', '" + self.passWd + "', '" + self.shippingInfo + "', '" + self.paymentInfo + "')"
+
+
+                                                            mycursor.execute(sql)
+
+                                                            mydb.commit()
+
+                                                            print("\n\nAccount successfully created!\n")
+
+                                                            return
+    
+    #Function to edit accounts shipping info column using UPDATE
+    def editShippingInfo(self):
+        pass
+
+    #Function to edit accounts payment info column using UPDATE
+    def editPaymentInfo(self):
+        pass
+
+    #Function to delete account information from SQL table using DELETE
+    #Spits user back to main menu instead of exiting
+    def deleteAccount(self):
+        while True:
+
+            #double confirmation message to prevent unnecessary deleting
+
+            userConf_1 = str(input("\nAre you sure you want to delete your account? (y/n) "))
+        
+            if userConf_1 == 'n':
+                print("\nPhew! That was close!\n")
+                return
+        
+            elif userConf_1 == 'y':
+                while True:
+
+                    userConf_2 = str(input("\nARE YOU SURE? (y/n) "))
+
+                    if userConf_2 == 'n':
+                        print("\nPhew! That was close!\n")
+                        return
+
+                    elif (userConf_2 == 'y'):
+
+                        accDel = "DELETE FROM accounts WHERE userName = '" + self.userName +"'"
+
+                        mycursor.execute(accDel)
+
+                        mydb.commit()
+
+                        print("\n\nGood-bye! We're sad to see you go!\n")
+                        return
+
+                    else:
+                        print("\nERROR: That is not a valid selection. Please try again\n")
+
+            else:
+                print("\nERROR: That is not a valid selection. Please try again\n")
+
+#^^^^ Prevention of invalid selection. Loops to ease frustration
+
+         
+
+            
+
+#Initializing some classes that will be updated
+
+class shoppingCart:
+    pass
+
+class orderHistory:
+    pass
+
+
+class inventory:
+    pass
+
+
+
+#Main function that initializes class instances
 
 
 def main():
+    u = User(customerID="", firstName="", lastName="", userName="", passWd="", shippingInfo="", paymentInfo="")
+
     print("\nWelcome to the E-Commerce Store!")
     print("Version 1.0.0 by Group 10\n")
 
@@ -47,154 +219,90 @@ def main():
 
         if menuSel == 0:
             raise SystemExit(0)
+            #exit program
 
         elif menuSel == 1:
-                
-            mycursor.execute("SELECT userName FROM accounts")
 
-            validUser = mycursor.fetchall()
-
-            mycursor.execute("SELECT passWd FROM accounts")
-
-            validPass = mycursor.fetchall()
+            #calls login, if returned then move to next menu, create account illusion
             
-            while True:
+            u.logIn()
 
-                currUser = str(input("\nEnter your username: "))
+            loggedIn = True
 
-                for i in validUser:
-                    if any(currUser in i for i in validUser):
-                        while True:
-                            currPass = str(input("\n Enter your password: "))
+            while loggedIn:
+                print("\n\n0. Exit the program\n")
+                print("1. Browse our inventory\n")
+                print("2. View your cart\n")
+                print("3. View order history\n")
+                print("4. Edit your account information\n")
+                print("5. Delete your account\n")
+                print("6. Logout\n")
 
-                            for i in validPass:
-                                if any(currPass in i for i in validPass):
-                                    loggedIn = True
+                menuSel = int(input("\nPlease make a selection: "))
 
-                                    while loggedIn == True:
-                                        print("\n\n0. Exit the program\n")
-                                        print("1. Browse our inventory\n")
-                                        print("2. View your cart\n")
-                                        print("3. Edit your account information\n")
-                                        print("4. Delete your account\n")
+                if menuSel == 0:
+                    raise SystemExit(0)
 
-                                        menuSel = int(input("\nPlease make a selection: "))
-
-                                        if menuSel == 0:
-                                            raise SystemExit(0)
-
-                                        #elif menuSel == 1:
+                #elif menuSel == 1:
 
 
-                                        #elif menuSel == 2:
+                #elif menuSel == 2:
 
-                                        #elif menuSel == 3:
+                #elif menuSel == 3:
 
-                                        elif menuSel == 4:
-                                            str(input("\nAre you sure you want to delete your account? (y/n) "))
-                                            userConf = str(input("\nARE YOU SURE? (y/n) "))
 
-                                            if (userConf == 'n'):
-                                                continue
+                #Decided to include editing of account info in one branch of menu, keep logged menu simple
+                elif menuSel == 4:
+                    while True:
+                        print("\n0. Go back\n")
+                        print("1. Edit shipping information\n")
+                        print("2. Edit payment information\n")
+                        
+                        menuSel = int(input("\nPlease make a selection: "))
 
-                                            elif (userConf == 'y'):
+                        if menuSel == 0:
+                            break
 
-                                                accDel = "DELETE FROM accounts WHERE userName = '" + currUser +"'"
+                        elif menuSel == 1:
+                            u.editShippingInfo
+                            break
 
-                                                mycursor.execute(accDel)
+                        elif menuSel == 2:
+                            u.editPaymentInfo
+                            break
 
-                                                mydb.commit()
+                        else:
+                            print("\nERROR: That is not a valid selection. Please try again.\n")
+                    
 
-                                                raise SystemExit(0)
+                #Return to main menu once deleted, hope they return
+                elif menuSel == 5:
+                    u.deleteAccount()
+                    break
 
-                                                
-                                                
-        
+                elif menuSel == 6:
+                    break
 
-                                            else:
-                                                print("\nERROR: That is not a valid selection. Exiting to menu.\n")
-                                                break
-                                            
-                                            
-                                                
 
-                                else:
-                                    print("ERROR: That password is incorrect. Please try again.\n")
-                                    break
+                else:
+                    print("\nERROR: That is not a valid selection. Please try again.\n")
 
-                            
-
-                    else:
-                        print("ERROR: That username does not exist. Please try again.\n")   
-                        break
-
-                         
-                break
+            
 
         elif menuSel == 2: 
 
-            mycursor.execute("SELECT userName FROM accounts")
-
-            validUser = mycursor.fetchall()
-
-            mycursor.execute("SELECT passWd FROM accounts")
-
-            validPass = mycursor.fetchall()
-
-            print("Welcome!")
-            validNew = False
-            while validNew == False:
-                newUser = str(input("Please enter a username: "))
-
-                if any(newUser in i for i in validUser):
-                    print("ERROR: That username already exists. Please enter a different one.")
-                    continue
-
-                else:
-
-                    newPass = str(input("Please enter a password: "))
-
-                    if any(newPass in i for i in validPass):
-                        print("ERROR: That password already exists. Please enter a different one.")
-                        continue
-
-                    else:
-                        mycursor.execute("SELECT customerID FROM accounts")
-                        IDind = mycursor.fetchall()
-                        newID = "980" + str(len(IDind) + 1)
-
-                        sql = "INSERT INTO accounts (customerID, userName, passWd) VALUES ('" + newID + "', '" + newUser + "', '" + newPass + "')"
-
-                        mycursor.execute(sql)
-
-                        mydb.commit()
-
-                        break
+            u.Register()
+            
 
 
-
+        else:
+            print("\nERROR: That is not a valid selection. Please try again.\n")
     
 
-        
-
-
-
-
-                
-            
-
-            
-
-                
-
-                
-                
-
-
-
+#^^^^ Plenty of incorrect menuing prevention. CLI programs NEED protective user input
 
 
 if __name__ == "__main__":
     main()
 
-
+#Call main
