@@ -196,7 +196,7 @@ class shoppingCart:
 
     def addToCart(self):
         self.item = str(input("\nItem Name: "))
-        self.quantity = int(input("\nAmount Wanted: "))
+        self.quantity = str(input("\nAmount Wanted: "))
         sql = "INSERT INTO cart (ItemName, ItemQuantity) VALUES ('"+ '"' + self.item +'",'  + self.quantity + "'" + ")"        
         mycursor.execute(sql)
 
@@ -207,13 +207,20 @@ class shoppingCart:
         mycursor.execute(sql)
 
     def viewCart(self):
-        self.userName = str(input("\nPlease enter a username: "))
-        sql = "SELECT * FROM cart WHERE CustomerID = " + "'" + self.userName + "'"
+        self.userName = str(input("\nPlease enter your username: "))
+        sql = "SELECT ItemName, ItemQuantity FROM cart WHERE CustomerID = " + "'" + self.userName + "'"
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
         for x in myresult:
             print(x)
 
+    def purchase(self):
+        self.userName = str(input("\nPlease enter your username: "))
+        sql = "DELETE FROM cart WHERE customerID = " + "'" + self.userName + "'"
+
+        mycursor.execute(sql)
+
+        
 
 
 class orderHistory:
@@ -274,7 +281,26 @@ def main():
 
 
                 elif menuSel == 2:
+                    cartMenu = True
                     c.viewCart()
+                    while cartMenu:
+                        print("1. Check out.")
+                        print("2. Remove an item from the cart.")
+                        print("3. Return to Main Menu.")
+
+                        cartSel = int(input("\nPlease make a selection: "))
+
+                        if cartSel == 1:
+                            c.purchase()
+                            
+                        if cartSel == 2:
+                            c.removeFromCart()
+                            c.viewCart()
+                        if cartSel == 3:
+                            cartMenu = False
+                        else:
+                            print("ERROR: That was not a correct selection.")
+
 
                 #elif menuSel == 3:
 
