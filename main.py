@@ -188,7 +188,33 @@ class User:
 #Initializing some classes that will be updated
 
 class shoppingCart:
-    pass
+    def _init_(self, item, quantity, userName):
+        self.item = item
+        self.quantity = quantity
+        self.userName = userName
+
+
+    def addToCart(self):
+        self.item = str(input("\nItem Name: "))
+        self.quantity = int(input("\nAmount Wanted: "))
+        sql = "INSERT INTO cart (ItemName, ItemQuantity) VALUES ('"+ '"' + self.item +'",'  + self.quantity + "'" + ")"        
+        mycursor.execute(sql)
+
+    def removeFromCart(self):
+        self.item = str(input("\nItem Name: "))
+        sql = "DELETE FROM cart WHERE itemName = " + "'" + self.item + "'"
+
+        mycursor.execute(sql)
+
+    def viewCart(self):
+        self.userName = str(input("\nPlease enter a username: "))
+        sql = "SELECT * FROM cart WHERE CustomerID = " + "'" + self.userName + "'"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        for x in myresult:
+            print(x)
+
+
 
 class orderHistory:
     pass
@@ -204,6 +230,7 @@ class inventory:
 
 def main():
     u = User(customerID="", firstName="", lastName="", userName="", passWd="", shippingInfo="", paymentInfo="")
+    c = shoppingCart()
 
     print("\nWelcome to the E-Commerce Store!")
     print("Version 1.0.0 by Group 10\n")
@@ -246,7 +273,8 @@ def main():
                 #elif menuSel == 1:
 
 
-                #elif menuSel == 2:
+                elif menuSel == 2:
+                    c.viewCart()
 
                 #elif menuSel == 3:
 
