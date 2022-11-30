@@ -328,7 +328,25 @@ def main():
 
 
                 elif menuSel == 2:
+                    cartMenu = True
                     c.viewCart()
+                    while cartMenu:
+                        print("1. Check out.")
+                        print("2. Remove an item from the cart.")
+                        print("3. Return to Main Menu.")
+
+                        cartSel = int(input("\nPlease make a selection: "))
+
+                        if cartSel == 1:
+                            c.purchase()
+
+                        if cartSel == 2:
+                            c.removeFromCart()
+                            c.viewCart()
+                        if cartSel == 3:
+                            cartMenu = False
+                        else:
+                            print("ERROR: That was not a correct selection.")
 
                 #elif menuSel == 3:
 
