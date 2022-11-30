@@ -168,7 +168,7 @@ class User:
                 print("\nNo changes needed. Returning to menu.\n")
 
             else:
-                sql = "UPDATE accounts SET shippingInfo='" + newPay + "' WHERE userName='" + self.userName + "'"
+                sql = "UPDATE accounts SET shippingInfo='" + str(newPay) + "' WHERE userName='" + self.userName + "'"
 
                 mycursor.execute(sql)
                 mydb.commit()
