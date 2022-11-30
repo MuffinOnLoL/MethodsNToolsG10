@@ -142,7 +142,7 @@ class User:
 
         for i in userExist:
             if i[5] == newShip:
-                print("\nNo changes needed! Returning to menu!\n")
+                print("\nNo changes needed. Returning to menu.\n")
 
             else:
                 sql = "UPDATE accounts SET shippingInfo='" + newShip + "' WHERE userName='" + self.userName + "'"
@@ -154,9 +154,27 @@ class User:
                 
                 return
 
+                
+
     #Function to edit accounts payment info column using UPDATE
     def editPaymentInfo(self):
-        pass
+        newPay = int(input("\nWhat would you like your new six-digit payment number to be? "))
+
+        for i in userExist:
+            if i[6] == newPay:
+                print("\nNo changes needed. Returning to menu.\n")
+
+            else:
+                sql = "UPDATE accounts SET shippingInfo='" + newPay + "' WHERE userName='" + self.userName + "'"
+
+                mycursor.execute(sql)
+                mydb.commit()
+
+                print("\nSuccessfully changed your payment information!\n")
+
+                return
+
+
 
     def viewAccountInfo(self):
         mycursor.execute("SELECT * FROM accounts WHERE userName='" + self.userName + "'")
