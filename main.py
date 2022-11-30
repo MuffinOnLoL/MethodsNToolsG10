@@ -249,9 +249,11 @@ class shoppingCart:
 
     def addToCart(self):
         self.item = str(input("\nItem Name: "))
-        self.quantity = int(input("\nAmount Wanted: "))
-        sql = "INSERT INTO cart (ItemName, ItemQuantity) VALUES ('"+ '"' + self.item +'",'  + self.quantity + "'" + ")"        
+        self.quantity = str(input("\nAmount Wanted: "))
+        sql = "INSERT INTO cart (ItemName, ItemQuantity, CustomerID) VALUES ('" + self.item + "', '" + self.quantity + "', '" + self.userName + "')"      
         mycursor.execute(sql)
+
+        sql2 = "DELETE FROM inventory WHERE itemName = " + "'" + self.item + "'"
 
     def removeFromCart(self):
         self.item = str(input("\nItem Name: "))
@@ -262,7 +264,7 @@ class shoppingCart:
     def viewCart(self):
 
         self.userName = str(input("\nPlease enter a username: "))
-        sql = "SELECT * FROM cart WHERE customerID = " + "'" + self.userName + "'"
+        sql = "SELECT ItemName, ItemQuantity FROM cart WHERE customerID = " + "'" + self.userName + "'"
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
         for x in myresult:
@@ -275,7 +277,50 @@ class orderHistory:
 
 
 class inventory:
-    pass
+    def init(self, item, price, stock):
+        self.item = item
+        self.price = price
+        self.stock = stock
+
+
+    def addToInventory(self):
+        self.item = str(input("\nItem Name: "))
+        self.price = str(input("\nList Price: "))
+        self.stock = str(input("\nStock Available: "))
+        sql = "INSERT INTO inventory (Name, Price, Amount) VALUES ('" + self.item + "', '" + self.price + "', '" + self.stock + "')"
+        mycursor.execute(sql)
+
+    def removeFromInventory(self):
+        self.item = str(input("\nItem you want to purchase: "))
+        sql = "SELECT * FROM inventory"
+        mycursor.execute(sql)
+        records = mycursor.fetchall()
+        itemFound = False
+        for row in records:
+            if (row[0] == self.item):
+                stockString = row[2]
+                print(stockString)
+                stockInt = int(stockString)
+                stockInt = stockInt - 1
+                stockString = str(stockInt)
+                print(stockString)
+                sql = "UPDATE inventory SET Amount='" + stockString + "' WHERE Name='" + self.item + "'"
+                itemFound = True
+
+        if (itemFound == False):
+            print("Item does not exist.")
+
+            #print("Name = ", row[0], )
+            #print("Price = ", row[1])
+            #print("Amount  = ", row[2], "\n")
+
+    def viewInventory(self):
+
+        sql = "SELECT * FROM inventory"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        for x in myresult:
+            print(x)
 
 
 
@@ -285,6 +330,7 @@ class inventory:
 def main():
     u = User(customerID="", firstName="", lastName="", userName="", passWd="", shippingInfo="", paymentInfo="")
     c = shoppingCart()
+    t = inventory()
 
     print("\nWelcome to the E-Commerce Store!")
     print("Version 1.0.0 by Group 10\n")
@@ -324,7 +370,25 @@ def main():
                 if menuSel == 0:
                     raise SystemExit(0)
 
-                #elif menuSel == 1:
+                elif menuSel == 1:
+                    inventoryMenu = True
+                    t.viewInventory()
+                    while inventoryMenu:
+                        print("1. Purchase Item")
+                        print("2. Refresh inventory")
+                        print("3. Return to Main Menu")
+
+                        inventorySel = int(input("\nPlease make a selection: "))
+
+                        if inventorySel == 1:
+                            t.removeFromInventory()
+
+                        if inventorySel == 2:
+                            t.viewInventory()
+                        if inventorySel == 3:
+                            inventoryMenu = False
+                        else:
+                            print("ERROR: That was not a correct selection.")
 
 
                 elif menuSel == 2:
@@ -345,6 +409,9 @@ def main():
                             c.viewCart()
                         if cartSel == 3:
                             cartMenu = False
+                        if cartSel == 4:
+                            c.addToCart()
+                            c.viewCart()
                         else:
                             print("ERROR: That was not a correct selection.")
 
