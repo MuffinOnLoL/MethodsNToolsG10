@@ -273,8 +273,9 @@ class shoppingCart:
         sql = "SELECT ItemName, ItemQuantity FROM cart WHERE customerID = " + "'" + self.userName + "'"
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
+        print("\nQty:\tName\n")
         for x in myresult:
-            print("\n" + "Qty: " + str(x[1]) + "\t" + str(x[0]))
+            print(str(x[1]) + "\t" + str(x[0]))
 
 
 
@@ -322,9 +323,15 @@ class inventory:
 
     def addToInventory(self):
         self.item = str(input("\nItem Name: "))
-        self.price = str(input("\nList Price: "))
-        self.stock = str(input("\nStock Available: "))
-        sql = "INSERT INTO inventory (Name, Price, Amount) VALUES ('" + self.item + "', '" + self.price + "', '" + self.stock + "')"
+        usrStock = str(input("\nHow many did you buy? "))
+
+        mycursor.execute("SELECT Amount FROM inventory where Name='" + self.item + "'")
+        self.stock = mycursor.fetchall()
+
+        for x in self.stock:
+            resetStock = x[0] + int(usrStock)
+
+        sql = "UPDATE inventory SET Amount='" + str(resetStock) + "' WHERE Name='" + self.item + "'"
         mycursor.execute(sql)
         mydb.commit()
 
@@ -360,9 +367,9 @@ class inventory:
         sql = "SELECT * FROM inventory"
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
-        print("\n")
+        print("\nQty:\tName\t       Price\n")
         for x in myresult:
-            print("Qty: " + str(x[2]) + "\t" + str(x[0]) + "\t$" + str(x[1]))
+            print(str(x[2]) + "\t" + str(x[0]) + "       $" + str(x[1]))
 
         return
 
