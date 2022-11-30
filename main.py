@@ -22,7 +22,7 @@ userExist = mycursor.fetchall()
 
 #intialize User class using init method
 class User:
-    def __init__(self, customerID, firstName, lastName, userName, passWd, shippingInfo, paymentInfo):
+    def _init_(self, customerID, firstName, lastName, userName, passWd, shippingInfo, paymentInfo):
         self.customerID = customerID
         self.firstName = firstName
         self.lastName = lastName
@@ -40,8 +40,7 @@ class User:
 
             for i in userExist:
                 if (i[3] != self.userName):
-                    print("\nERROR: That username does not exist. Please try again.\n")
-                    break
+                    continue
                 
                 else:
                     while True:
@@ -51,12 +50,14 @@ class User:
 
                         for i in userExist:
                             if (i[4] != self.passWd):
-                                print("\nERROR: That password is incorrect. Please try again.\n")
-                                break
+                                continue
 
                             else:
                                 print("\nSuccessfully logged in!")
                                 return
+
+                        print("\nERROR: That password is incorrect. Please try again.\n")
+            print("\nERROR: That username does not exist. Please try again.\n")
         
 
 
@@ -248,6 +249,7 @@ class shoppingCart:
 
 
     def addToCart(self):
+        self.userName = str(input("Please enter your username: "))
         self.item = str(input("\nItem Name: "))
         self.quantity = str(input("\nAmount Wanted: "))
         sql = "INSERT INTO cart (ItemName, ItemQuantity, CustomerID) VALUES ('" + self.item + "', '" + self.quantity + "', '" + self.userName + "')"      
@@ -263,12 +265,12 @@ class shoppingCart:
 
     def viewCart(self):
 
-        self.userName = str(input("\nPlease enter a username: "))
+        self.userName = str(input("\nPlease enter your username: "))
         sql = "SELECT ItemName, ItemQuantity FROM cart WHERE customerID = " + "'" + self.userName + "'"
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
         for x in myresult:
-            print(x)
+            print("\n" + "Qty: " + str(x[1]) + "\t" + str(x[0]))
 
 
 
@@ -293,6 +295,7 @@ class orderHistory:
         self.paymentInfo = str(input("\nPayment Information: "))
         sql = "INSERT INTO orders (PastPurchases, ShippingInfo, PaymentInfo) VALUES ('" + self.purchased + "', '" + self.shippingInfo + "', '" + self.paymentInfo + "')"
         mycursor.execute(sql)
+        mydb.commit()
         print("Successfully added purchase to history!\n")
 
 
@@ -340,7 +343,7 @@ class inventory:
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
         for x in myresult:
-            print(x)
+            print("Qty: " + str(x[2]) + "\t" + str(x[0]) + "\t$" + str(x[1]))
 
         return
 
@@ -350,7 +353,7 @@ class inventory:
 
 
 def main():
-    u = User(customerID="", firstName="", lastName="", userName="", passWd="", shippingInfo="", paymentInfo="")
+    u = User()
     c = shoppingCart()
     t = inventory()
     o = orderHistory()
@@ -398,22 +401,24 @@ def main():
                     t.viewInventory()
                     while inventoryMenu:
 
-                        print("1. Purchase Item")
+                        print("\n1. Add to cart")
                         print("2. Refresh inventory")
                         print("3. Return to Main Menu")
 
                         inventorySel = int(input("\nPlease make a selection: "))
 
                         if inventorySel == 1:
-                            t.removeFromInventory()
+                            c.addToCart()
+
+                            print("\nItem was successfully added!\n")
 
                         elif inventorySel == 2:
                             t.viewInventory()
-                        if inventorySel == 3:
-                            o.viewOrderHistory()
-                            inventoryMenu = False
                         elif inventorySel == 3:
-                            break
+                            inventoryMenu = False
+
+                        elif inventorySel == '':
+                            print("ERROR: That was not a correct selection.")
                         else:
                             print("ERROR: That was not a correct selection.")
 
@@ -422,27 +427,33 @@ def main():
                     cartMenu = True
                     c.viewCart()
                     while cartMenu:
-                        print("1. Check out.")
+                        print("\n1. Check out.")
                         print("2. Remove an item from the cart.")
                         print("3. Return to Main Menu.")
 
                         cartSel = int(input("\nPlease make a selection: "))
 
                         if cartSel == 1:
-                            c.purchase()
+                            t.removeFromInventory()
+                            o.addToOrderHistory()
 
-                        if cartSel == 2:
+                            print("\nThank you for shopping with us!")
+                            break
+
+                        elif cartSel == 2:
                             c.removeFromCart()
                             c.viewCart()
-                        if cartSel == 3:
+
+                        elif cartSel == 3:
                             cartMenu = False
-                        if cartSel == 4:
+                        elif cartSel == 4:
                             c.addToCart()
                             c.viewCart()
                         else:
                             print("ERROR: That was not a correct selection.")
 
-                #elif menuSel == 3:
+                elif menuSel == 3:
+                    o.viewOrderHistory()
 
 
                 #Decided to include editing of account info in one branch of menu, keep logged menu simple
