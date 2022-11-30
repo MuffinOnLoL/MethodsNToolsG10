@@ -477,26 +477,21 @@ def main():
                 #Decided to include editing of account info in one branch of menu, keep logged menu simple
                 elif menuSel == 4:
                     while True:
+                        u.viewAccountInfo()
                         print("\n1. Edit shipping information\n")
                         print("2. Edit payment information\n")
-                        print("3. View account information\n")
-                        print("4. Return to menu\n")
+                        print("3. Return to menu\n")
                         
                         menuSel = int(input("\nPlease make a selection: "))
 
                         if menuSel == 1:
                             u.editShippingInfo()
-                            break
+                            
 
                         elif menuSel == 2:
                             u.editPaymentInfo()
-                            break
 
                         elif menuSel == 3:
-                            u.viewAccountInfo()
-                            break
-
-                        elif menuSel == 4:
                             break
 
                         else:
