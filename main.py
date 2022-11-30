@@ -154,7 +154,7 @@ class User:
                 
                 return
 
-                
+
 
     #Function to edit accounts payment info column using UPDATE
     def editPaymentInfo(self):
@@ -305,6 +305,8 @@ class inventory:
                 stockString = str(stockInt)
                 print(stockString)
                 sql = "UPDATE inventory SET Amount='" + stockString + "' WHERE Name='" + self.item + "'"
+                mycursor.execute(sql)
+                mydb.commit()
                 itemFound = True
 
         if (itemFound == False):
@@ -371,9 +373,8 @@ def main():
                     raise SystemExit(0)
 
                 elif menuSel == 1:
-                    inventoryMenu = True
                     t.viewInventory()
-                    while inventoryMenu:
+                    while True:
                         print("1. Purchase Item")
                         print("2. Refresh inventory")
                         print("3. Return to Main Menu")
@@ -386,7 +387,7 @@ def main():
                         if inventorySel == 2:
                             t.viewInventory()
                         if inventorySel == 3:
-                            inventoryMenu = False
+                            break
                         else:
                             print("ERROR: That was not a correct selection.")
 
