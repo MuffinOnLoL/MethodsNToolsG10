@@ -461,6 +461,7 @@ def main():
 
                         elif cartSel == 2:
                             c.removeFromCart()
+                            t.addToInventory()
                             c.viewCart()
 
                         elif cartSel == 3:
