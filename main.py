@@ -297,7 +297,7 @@ class orderHistory:
 
 
 class inventory:
-    def init(self, item, price, stock):
+    def _init_(self, item, price, stock):
         self.item = item
         self.price = price
         self.stock = stock
@@ -319,11 +319,11 @@ class inventory:
         for row in records:
             if (row[0] == self.item):
                 stockString = row[2]
-                print(stockString)
+
                 stockInt = int(stockString)
                 stockInt = stockInt - 1
                 stockString = str(stockInt)
-                print(stockString)
+
                 sql = "UPDATE inventory SET Amount='" + stockString + "' WHERE Name='" + self.item + "'"
                 itemFound = True
 
@@ -341,6 +341,8 @@ class inventory:
         myresult = mycursor.fetchall()
         for x in myresult:
             print(x)
+
+        return
 
 
 
@@ -395,6 +397,7 @@ def main():
                     inventoryMenu = True
                     t.viewInventory()
                     while inventoryMenu:
+
                         print("1. Purchase Item")
                         print("2. Refresh inventory")
                         print("3. Return to Main Menu")
@@ -404,11 +407,13 @@ def main():
                         if inventorySel == 1:
                             t.removeFromInventory()
 
-                        if inventorySel == 2:
+                        elif inventorySel == 2:
                             t.viewInventory()
                         if inventorySel == 3:
                             o.viewOrderHistory()
                             inventoryMenu = False
+                        elif inventorySel == 3:
+                            break
                         else:
                             print("ERROR: That was not a correct selection.")
 
