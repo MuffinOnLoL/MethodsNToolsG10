@@ -154,7 +154,7 @@ class User:
                 
                 return
 
-
+                
 
     #Function to edit accounts payment info column using UPDATE
     def editPaymentInfo(self):
@@ -273,7 +273,27 @@ class shoppingCart:
 
 
 class orderHistory:
-    pass
+    def _init_(self, purchased, shippingInfo, paymentInfo):
+        self.purchased = purchased
+        self.shippingInfo = shippingInfo
+        self.paymentInfo = paymentInfo
+
+
+    #Displays the user's purchasing history as well as related information
+    def viewOrderHistory(self):
+        sql = "SELECT * from orders"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+
+
+    #Adds a purchased order to the given user's ordering history for later view
+    def addToOrderHistory(self):
+        self.purchased = str(input("\nItem Purchased: "))
+        self.shippingInfo = str(input("\nShipping Information: "))
+        self.paymentInfo = str(input("\nPayment Information: "))
+        sql = "INSERT INTO orders (PastPurchases, ShippingInfo, PaymentInfo) VALUES ('" + self.purchased + "', '" + self.shippingInfo + "', '" + self.paymentInfo + "')"
+        mycursor.execute(sql)
+        print("Successfully added purchase to history!\n")
 
 
 class inventory:
@@ -305,8 +325,6 @@ class inventory:
                 stockString = str(stockInt)
                 print(stockString)
                 sql = "UPDATE inventory SET Amount='" + stockString + "' WHERE Name='" + self.item + "'"
-                mycursor.execute(sql)
-                mydb.commit()
                 itemFound = True
 
         if (itemFound == False):
@@ -333,6 +351,7 @@ def main():
     u = User(customerID="", firstName="", lastName="", userName="", passWd="", shippingInfo="", paymentInfo="")
     c = shoppingCart()
     t = inventory()
+    o = orderHistory()
 
     print("\nWelcome to the E-Commerce Store!")
     print("Version 1.0.0 by Group 10\n")
@@ -373,8 +392,9 @@ def main():
                     raise SystemExit(0)
 
                 elif menuSel == 1:
+                    inventoryMenu = True
                     t.viewInventory()
-                    while True:
+                    while inventoryMenu:
                         print("1. Purchase Item")
                         print("2. Refresh inventory")
                         print("3. Return to Main Menu")
@@ -387,7 +407,8 @@ def main():
                         if inventorySel == 2:
                             t.viewInventory()
                         if inventorySel == 3:
-                            break
+                            o.viewOrderHistory()
+                            inventoryMenu = False
                         else:
                             print("ERROR: That was not a correct selection.")
 
