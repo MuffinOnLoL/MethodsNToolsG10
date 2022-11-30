@@ -326,6 +326,7 @@ class inventory:
         self.stock = str(input("\nStock Available: "))
         sql = "INSERT INTO inventory (Name, Price, Amount) VALUES ('" + self.item + "', '" + self.price + "', '" + self.stock + "')"
         mycursor.execute(sql)
+        mydb.commit()
 
     def removeFromInventory(self):
         self.item = str(input("\nItem you want to purchase: "))
